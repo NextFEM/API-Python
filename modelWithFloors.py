@@ -1,6 +1,11 @@
-import sys
+import sys; import os;
 import clr
-clr.AddReference("C:\\Program Files\\NextFEM\\NextFEM Designer 64bit\\NextFEMapi.dll")
+from winreg import * # for reg. access
+addr = r"SOFTWARE\Classes\NextFEM Designer\shell\open\command"
+aReg = ConnectRegistry(None, HKEY_LOCAL_MACHINE)
+aKey = OpenKey(aReg, addr); vkey = QueryValueEx(aKey,None)
+dir=os.path.split(vkey[0].replace('"','').replace("%1","").strip())[0]
+clr.AddReference(dir + "\\NextFEMapi.dll")
 
 import NextFEMapi
 nf=NextFEMapi.API()
@@ -23,7 +28,7 @@ beamID3=nf.addBeam(n3, n4, sectID, matID)
 beamID4=nf.addBeam(n4, n1, sectID, matID)
 nf.addLoadCase("G")
 nf.setFloorLoad("load", "G", 1.8, 0, 0, -1)
-nf.addFloorLoadPlane("load", 2, n1, n2, n3, n4)
+nf.addFloorPlane("load", 2, n1, n2, n3, n4)
 s=nf.RunModel(); print(s)
 nf.saveModel("proj_roof.nxf")
 nf.startDesigner("proj_roof.nxf")

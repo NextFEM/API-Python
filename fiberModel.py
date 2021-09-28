@@ -1,6 +1,11 @@
-import sys
+import sys; import os;
 import clr
-clr.AddReference("C:\\Program Files\\NextFEM\\NextFEM Designer 64bit\\NextFEMapi.dll")
+from winreg import * # for reg. access
+addr = r"SOFTWARE\Classes\NextFEM Designer\shell\open\command"
+aReg = ConnectRegistry(None, HKEY_LOCAL_MACHINE)
+aKey = OpenKey(aReg, addr); vkey = QueryValueEx(aKey,None)
+dir=os.path.split(vkey[0].replace('"','').replace("%1","").strip())[0]
+clr.AddReference(dir + "\\NextFEMapi.dll")
 import NextFEMapi
 
 nf=NextFEMapi.API()
