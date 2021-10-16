@@ -25,7 +25,7 @@ def model3():
     """ vertical cantilever and modal analysis + Opensees
     """
     global nf
-    nf.newModel
+    nf.newModel()
     nf.modelName = "model3"; print(nf.modelName + " ---------------------------------------")
     nf.addNodeWithID(0,0,0,"1"); nf.addNodeWithID(0,0,1,"2")
     # section and material from library
