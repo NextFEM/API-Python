@@ -10,7 +10,7 @@ clr.AddReference(dir + "\\NextFEMapi.dll")
 import NextFEMapi
 nf=NextFEMapi.API()
 
-nf.newModel
+nf.newModel()
 Lu=nf.getLenUnit()
 Fu=nf.getForceUnit()
 print("Model units: " + Lu + ", " + Fu)
