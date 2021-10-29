@@ -76,11 +76,11 @@ def model8(Nfloors):
     sID=nf.addEC8spectrum(0.35,1.5,"LLS") # spectrum as per EC8 with ag=0.35, q=1.5 and for Life-Safety limit state
     nf.applyEC8lateralForces(sID,pushLC,"",False,0,0.075)
     print("Solving..."); print(nf.RunLoadCase(pushLC))
-    print("Model saved: " + str(nf.saveModel(savedir + nf.ModelName + ".nxf")))
-    #if msgbox("NextFEM API","Open model with results?",4): nf.startDesigner('"' + savedir + nf.ModelName + ".nxf" + '"' + " -res")
+    print("Model saved: " + str(nf.saveModel(savedir + nf.modelName + ".nxf")))
+    #if msgbox("NextFEM API","Open model with results?",4): nf.startDesigner('"' + savedir + nf.modelName + ".nxf" + '"' + " -res")
     # export pushover curve
-    print("Executing data extraction: " + nf.ModelName + ".nxf" + " -d " + pushLC + " pushX")
-    nf.startDesigner('"' + savedir + nf.ModelName + ".nxf" + '"' + " -d " + pushLC + " pushX")
+    print("Executing data extraction: " + nf.modelName + ".nxf" + " -d " + pushLC + " pushX")
+    nf.startDesigner('"' + savedir + nf.modelName + ".nxf" + '"' + " -d " + pushLC + " pushX")
 
 # launch with 3 floors
 model8(3)
