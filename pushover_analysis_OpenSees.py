@@ -71,7 +71,8 @@ def model8(Nfloors):
     pushLCy="pushoverY"; nf.addLoadCase(pushLCy)
     # control node
     cnode=nf.getControlNode()
-    step=0.0005
+    step=0.001
+    # calculate number of steps from step length, considering 2% of ultimate lateral displacement
     nsteps=int(float(nf.getNodeProperty(cnode,"Z"))*0.02/step)
     tol=1
     nf.setNLSanalysis(pushLC,step,nsteps,tol,10,-1,cnode,1) # pushover in displ. control for X dir.
