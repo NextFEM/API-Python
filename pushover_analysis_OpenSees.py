@@ -31,7 +31,7 @@ def model8(Nfloors):
     # set units
     nf.setUnits("m","kN")
     # get sections and material
-    sX=nf.addRectSection(0.30,0.50); sY=nf.addRectSection(0.5,0.24); sZ=nf.addRectSection(0.40,0.40)
+    sX=nf.addRectSection(0.30,0.50); sY=nf.addRectSection(0.5,0.24); sZ=nf.addRectSection(0.40,0.50)
     matID = nf.addMatFromLib("C25/30")
     # loadcases
     nf.addLoadCase("pp"); nf.addLoadCase("perm"); nf.addLoadCase("var")
@@ -60,27 +60,39 @@ def model8(Nfloors):
     print("Auto-sizing rebar, please wait ...")
     print(nf.checkModel(newLC1,"1",1,"Static_Rebar_Design",True,True,[desMat]))
     # set OpenSees as default solver - path must be set inside Designer options, best having it in the installation path
-    nf.changeSolver(1,dir + "\\opensees.exe")
+    if not nf.changeSolver(1): quit()
     # set fiber section
     nf.setFiberSection(sX); nf.setFiberSection(sY); nf.setFiberSection(sZ)
     
     # add nonlinear analysis in sequence
-    nf.setNLSanalysis(newLC2,0.1,10,0.001,30) # vertical loading
-    pushLC="pushoverX"
-    nf.addLoadCase(pushLC)
-    # control node 158
+    nf.setNLSanalysis(newLC2,0.1,10,0.001,10) # vertical loading
+    pushLC="pushoverX"; nf.addLoadCase(pushLC)
+    # pushover in Y
+    pushLCy="pushoverY"; nf.addLoadCase(pushLCy)
+    # control node
     cnode=nf.getControlNode()
-    nf.setNLSanalysis(pushLC,0.001,1000,0.1,30,-1,cnode,1) # pushover in displ. control for X dir.
+    step=0.0005
+    nsteps=int(float(nf.getNodeProperty(cnode,"Z"))*0.02/step)
+    tol=1
+    nf.setNLSanalysis(pushLC,step,nsteps,tol,10,-1,cnode,1) # pushover in displ. control for X dir.
+    nf.setNLSanalysis(pushLCy,step,nsteps,tol,10,-1,cnode,2) # pushover in displ. control for Y dir.
     nf.setAnalysisSequence(pushLC,newLC2) # pushX after LC_seismW
+    nf.setAnalysisSequence(pushLCy,newLC2) # pushY after LC_seismW
     # add functions for pushover analysis
     sID=nf.addEC8spectrum(0.35,1.5,"LLS") # spectrum as per EC8 with ag=0.35, q=1.5 and for Life-Safety limit state
-    nf.applyEC8lateralForces(sID,pushLC,"",False,0,0.075)
-    print("Solving..."); print(nf.RunLoadCase(pushLC))
+    nf.applyEC8lateralForces(sID,pushLC,pushLCy,False,0,0.075)
+    print("Model saved: " + str(nf.saveModel(savedir + nf.modelName + ".nxf")))
+
+    print("Solving..."); print(nf.RunLoadCase(pushLC)); print(nf.RunLoadCase(pushLCy))
+
     print("Model saved: " + str(nf.saveModel(savedir + nf.modelName + ".nxf")))
     #if msgbox("NextFEM API","Open model with results?",4): nf.startDesigner('"' + savedir + nf.modelName + ".nxf" + '"' + " -res")
-    # export pushover curve
+    # export pushover curve X
     print("Executing data extraction: " + nf.modelName + ".nxf" + " -d " + pushLC + " pushX")
     nf.startDesigner('"' + savedir + nf.modelName + ".nxf" + '"' + " -d " + pushLC + " pushX")
+    # export pushover curve Y
+    print("Executing data extraction: " + nf.modelName + ".nxf" + " -d " + pushLCy + " pushY")
+    nf.startDesigner('"' + savedir + nf.modelName + ".nxf" + '"' + " -d " + pushLCy + " pushY")
 
 # launch with 3 floors
 model8(3)
