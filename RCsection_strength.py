@@ -44,6 +44,9 @@ def model43():
     cover=0.04; rebN=6
     # pattern: Top=0, Bottom=1, Equal spacing=2, Wall=3, Lateral=4, Left=5, Right=6
     nf.addRebarPatternInSection(2,se,rebN,cover,desMat,areaB)
+    # add stirrups/hoops
+    spacing=0.2; # m
+    nf.addStirrupBarsInSection(se,2,2,areaB,spacing,desMat)
     # image
     nf.saveSectionImage(se,savedir + "RCsect")
     # set axial force N and a sign of moment in section for strength calculation (+ tension, - compression)
@@ -60,6 +63,15 @@ def model43():
     print("Calculate strength in yielding conditions --------------------------------------")
     for i in range(0,length_hint(res1.checkNames)):
         print(res1.checkNames[i] + " = " + str(res1.values[i]))
+    # get domain points
+    plotNMz=nf.getSectionResDomainPoints(0,2)
+    x=[]; y=[];
+    for i in range(0,len(plotNMz)):
+        x.append(plotNMz[i][0]); y.append(plotNMz[i][1])
+    print("Plot: " + str(nf.getDataPlot(x,y,savedir + nf.modelName + "_N-Mzz.png")))
+    # get shear resistance
+    res2=nf.getSectionResShear(se)
+    print("VrdY=" + str(res2[0]) + " - VrdZ=" + str(res2[1]))
     nf.saveModel(savedir + nf.modelName + ".nxs"); # save in NextFEM Section Analyzer format
 
 model43()
