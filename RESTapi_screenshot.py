@@ -30,7 +30,8 @@ def model38():
     import json
     global nf
     # this is successful only if the plugin "REST API server" is running
-    cnt=nf.connect()
+    nf.addHeaderToREST("user", nf.getUsername())
+    cnt=nf.connect("http://localhost:5151")
     print("Connection status: " + str(cnt))
     if not cnt: return
 
