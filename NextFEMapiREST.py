@@ -93,7 +93,7 @@ class NextFEMrest:
     def addOmegaSection(self, Lz, Ly, tw, d): return int(self.nfrest('GET', '/section/add/omega/'+str(Lz)+'/'+str(Ly)+'/'+str(tw)+'/'+str(d)+'', None, None))
     def addOrChangeDesMaterialProperty(self, ID, name, value, units): return bool(self.nfrest('POST', '/designmaterial/prop/'+str(ID)+'/'+name+'/'+str(value)+'/'+units+'', None, None))
     def addOrChangeMaterialProperty(self, ID, name, value, units): return bool(self.nfrest('POST', '/material/prop/'+str(ID)+'/'+name+'/'+value+'/'+units+'', None, None))
-    def addOrModifyCustomData(self, key, value): return bool(self.nfrest('POST', '/model/customdata'+key+'', value, None))
+    def addOrModifyCustomData(self, key, value): return bool(self.nfrest('POST', '/model/customdata/'+key+'', value, None))
     def addPipeSection(self, D, t): return int(self.nfrest('GET', '/section/add/pipe/'+str(D)+'/'+str(t)+'', None, None))
     def addPlanarSection(self, t): return int(self.nfrest('GET', '/section/add/planar/'+str(t)+'', None, None))
     def addQuad(self, n1, n2, n3, n4, sect, mat): return self.nfrest('GET', '/element/add/quad/'+n1+'/'+n2+'/'+n3+'/'+n4+'/'+str(sect)+'/'+str(mat)+'', None, None)
