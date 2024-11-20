@@ -46,6 +46,17 @@ class NextFEMrest:
             response = requests.delete(url=url, headers=headers)
         return response.content
 
+    # methods and properties for Server
+    def saveUser(self): return bool(self.nfrest('GET', '/op/saveuser')); # save model on server
+    def userFile(self, filename, localPath):
+        # get file from server, return bytes
+        bts=self.nfrestB('GET', '/op/userfile', None, dict([("path",filename)]))
+        if bts==b'False': 
+            return False
+        with open(localPath, "wb") as binary_file:
+            binary_file.write(bts)
+        return True
+
     # methods and properties
     def activeBarsDiameters(self): return json.loads(self.nfrest('GET', '/element/rebar/barsdiam', None, None))
     def activeHoopsDiameters(self): return json.loads(self.nfrest('GET', '/element/rebar/hoopsdiam', None, None))
